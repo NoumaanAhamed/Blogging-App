@@ -4,6 +4,7 @@ const { generateJwtToken } = require("../utils/jwt");
 const bcrypt = require("bcrypt");
 //!ensure password is string
 
+//* functions for routes folder
 async function handleAdminRegistration(req, res) {
   const { username, email, password } = req.body;
 
