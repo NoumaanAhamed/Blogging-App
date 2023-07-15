@@ -8,6 +8,15 @@ const {
   handleUserRegistration,
   handleUserLogin,
 } = require("../controllers/userControllers");
+const { isAuthenticated, isAdmin } = require("../middlewares/auth");
+
+router.get("/admin/test", isAuthenticated, isAdmin, (req, res) => {
+  return res.send("Admin Inside");
+});
+
+router.get("/user/test", isAuthenticated, (req, res) => {
+  return res.send("User Inside");
+});
 
 router.post("/admin/register", handleAdminRegistration);
 
