@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const { generateJwtToken } = require("../utils/jwt");
+
 const bcrypt = require("bcrypt");
+//!ensure password is string
 
 async function handleAdminRegistration(req, res) {
   const { username, email, password } = req.body;
@@ -9,7 +11,13 @@ async function handleAdminRegistration(req, res) {
     return res.status(409).send({ message: "missing details" });
   }
 
-  const newAdmin = await User.create({ ...req.body, role: "ADMIN" });
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const newAdmin = await User.create({
+    ...req.body,
+    password: hashedPassword,
+    role: "ADMIN",
+  });
 
   const token = generateJwtToken({ adminId: newAdmin._id });
 
@@ -23,10 +31,16 @@ async function handleAdminLogin(req, res) {
     return res.status(409).send({ message: "missing details" });
   }
 
-  const currentAdmin = await User.findOne({ email, password });
+  const currentAdmin = await User.findOne({ email });
 
   if (!currentAdmin) {
-    return res.status(401).send({ message: "Incorrect username or password" });
+    return res.status(404).send({ message: "admin not found" });
+  }
+
+  const isMatch = await bcrypt.compare(password, currentAdmin.password);
+
+  if (!isMatch) {
+    return res.status(401).send({ message: "Incorrect password" });
   }
 
   const token = generateJwtToken({ adminId: currentAdmin._id });
