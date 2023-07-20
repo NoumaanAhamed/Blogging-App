@@ -40,6 +40,10 @@ async function handleViewBlog(req, res) {
     return res.status(404).send({ message: "blog doesn't exist" });
   }
 
+  if (!blog.published) {
+    return res.status(403).json({ message: "This blog is not published" });
+  }
+
   res.send({ blog });
 }
 async function handleCreateBlog(req, res) {
@@ -122,9 +126,91 @@ async function handleDeleteBlog(req, res) {
   res.send({ message: "blog deleted successfully" });
 }
 
-async function handleComment(req, res) {}
+async function handleComment(req, res) {
+  const { id } = req.params;
 
-async function handleLike(req, res) {}
+  let validId = mongoose.Types.ObjectId.isValid(id);
+
+  if (!validId) {
+    return res.status(404).send({ message: "Invalid Blog ID" });
+  }
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.status(404).json({ message: "Blog not found" });
+  }
+
+  const { text } = req.body;
+
+  if (!text) {
+    return res.status(409).send({ message: "missing comment" });
+  }
+
+  const comment = {
+    text,
+    user: req.data.userId || req.data.adminId,
+    createdAt: new Date(),
+  };
+
+  blog.comments.push(comment);
+
+  await blog.save();
+
+  res.json({ message: "Comment added successfully", comment: newComment });
+}
+
+async function handleLike(req, res) {
+  const { id } = req.params;
+
+  let validId = mongoose.Types.ObjectId.isValid(id);
+
+  if (!validId) {
+    return res.status(404).send({ message: "Invalid Blog ID" });
+  }
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.status(404).json({ message: "Blog not found" });
+  }
+
+  // Check if the user has already liked the blog
+
+  const userLikedIndex = blog.likes.findIndex((like) => {
+    like.user.equals(req.data.userId || req.data.adminId);
+  });
+
+  if (userLikedIndex === -1) {
+    blog.likes.splice(userLikedIndex, 1);
+  } else {
+    blog.likes.push({ user: req.data.userId || req.data.adminId });
+  }
+
+  await blog.save();
+
+  res.json({ message: "Blog liked / unliked successfully" });
+
+  // ... other controller functions
+}
+
+async function handleViewMyBlog(req, res) {
+  const { id } = req.params;
+
+  let validId = mongoose.Types.ObjectId.isValid(id);
+
+  if (!validId) {
+    return res.status(404).send({ message: "Invalid blog ID" });
+  }
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.status(404).send({ message: "blog doesn't exist" });
+  }
+
+  res.send({ blog });
+}
 
 async function handleViewMyBlogs(req, res) {
   try {
@@ -139,7 +225,20 @@ async function handleViewMyBlogs(req, res) {
   }
 }
 
-async function handlePublishBlog(req, res) {}
+async function handlePublishBlog(req, res) {
+  const { id } = req.params;
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.status(404).json({ message: "Blog not found" });
+  }
+
+  blog.published = !blog.published;
+  await blog.save();
+
+  res.send({ message: "Blog published / unpublished successfully" });
+}
 
 async function handleViewAllBlogs(req, res) {
   try {
@@ -161,4 +260,5 @@ module.exports = {
   handleLike,
   handleViewMyBlogs,
   handlePublishBlog,
+  handleViewMyBlog,
 };

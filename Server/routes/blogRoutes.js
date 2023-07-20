@@ -13,6 +13,7 @@ const {
   handleLike,
   handleViewMyBlogs,
   handlePublishBlog,
+  handleViewMyBlog,
 } = require("../controllers/blogControllers");
 
 const { isAuthenticated, isAdmin } = require("../middlewares/auth");
@@ -24,6 +25,8 @@ router
   .post(isAuthenticated, handleCreateBlog);
 
 router.get("/me", isAuthenticated, handleViewMyBlogs);
+
+router.get("/me/:id", isAuthenticated, checkBlogOwnership, handleViewMyBlog);
 
 router.get("/all", isAuthenticated, isAdmin, handleViewAllBlogs);
 

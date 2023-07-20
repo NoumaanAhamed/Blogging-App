@@ -17,6 +17,6 @@
 - [x] Authentication(cookie/token - jwt)
 - [x] Use Try/Catch
 - [ ] Blog Schema - title/coverimage/body/createdBy/comments
-- [ ] Blog routes - postblog/showblogs/viewblog
-- [ ] Comments Schema - content/createdBy/blogid
-- [ ] Comments routes - postcomment(only loggedin users)
+- [x] Blog routes - postblog/showblogs/viewblog
+- [x] Comments Schema - content/createdBy/blogid
+- [x] Comments routes - postcomment(only loggedin users)
