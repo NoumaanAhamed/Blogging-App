@@ -3,6 +3,7 @@ require("dotenv").config();
 
 //*import express
 const express = require("express");
+const cors = require("cors")
 
 const cookieParser = require("cookie-parser");
 
@@ -19,16 +20,28 @@ const blogRoute = require("./routes/blogRoutes.js");
 const app = express();
 
 //*middlewares
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(cookieParser());
-app.use("/", userRoute);
-app.use("/blog", blogRoute);
 
 //*refers to connection.js
 connectMongoDb(process.env.MongoURI);
 
 const PORT = process.env.PORT || 5000;
+
+const allowedOrigins = ['http://localhost:5174'];
+
+const corsOptions = {
+  origin: 'http://localhost:5174', // Replace this with your frontend domain
+  credentials: true, // Allow cookies to be included in requests
+};
+
+app.use(cors(corsOptions));
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser());
+app.use("/", userRoute);
+app.use("/blog", blogRoute);
+
 
 //*sample test
 app.get("/", (req, res) => {
