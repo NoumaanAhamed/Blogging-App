@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* If the Navbar component is using a class or an ID, replace .navbar with your selector */
+/* .navbar {
+  margin: 0;
+  padding: 0;
+} */
