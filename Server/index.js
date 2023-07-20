@@ -4,6 +4,8 @@ require("dotenv").config();
 //*import express
 const express = require("express");
 
+const cookieParser = require("cookie-parser");
+
 //*refers to connection.js
 const connectMongoDb = require("./connection.js");
 
@@ -15,6 +17,7 @@ const app = express();
 
 //*middlewares
 app.use(express.json());
+app.use(cookieParser());
 app.use("/", userRoute);
 
 //*refers to connection.js

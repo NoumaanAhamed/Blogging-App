@@ -7,6 +7,7 @@ const {
   handleAdminLogin,
   handleUserRegistration,
   handleUserLogin,
+  handleLogout,
 } = require("../controllers/userControllers");
 const { isAuthenticated, isAdmin } = require("../middlewares/auth");
 
@@ -25,5 +26,7 @@ router.post("/admin/login", handleAdminLogin);
 router.post("/user/register", handleUserRegistration);
 
 router.post("/user/login", handleUserLogin);
+
+router.post("/user/logout", handleLogout);
 
 module.exports = router;
