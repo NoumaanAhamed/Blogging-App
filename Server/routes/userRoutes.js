@@ -27,6 +27,6 @@ router.post("/user/register", handleUserRegistration);
 
 router.post("/user/login", handleUserLogin);
 
-router.post("/user/logout", handleLogout);
+router.post("/user/logout", isAuthenticated, handleLogout);
 
 module.exports = router;

@@ -13,13 +13,13 @@ async function handleAdminRegistration(req, res) {
       return res.status(409).send({ message: "missing details" });
     }
 
-    const isExist = await User.find({ email });
+    const isExist = await User.findOne({ email }); //!Don't use find()
 
     if (isExist) {
       return res.status(409).send({ message: "admin already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password.toString(), 10);
 
     const newAdmin = await User.create({
       ...req.body,
@@ -88,13 +88,18 @@ async function handleUserRegistration(req, res) {
       return res.status(409).send({ message: "missing details" });
     }
 
-    const isExist = await User.find({ email });
+    const isExist = await User.findOne({ email });
 
     if (isExist) {
       return res.status(409).send({ message: "user already exists" });
     }
 
-    const newUser = await User.create(req.body);
+    const hashedPassword = await bcrypt.hash(password.toString(), 10);
+
+    const newUser = await User.create({
+      ...req.body,
+      password: hashedPassword,
+    });
 
     const token = generateJwtToken({ userId: newUser._id });
 
@@ -120,10 +125,10 @@ async function handleUserLogin(req, res) {
     }
     const currentUser = await User.findOne({ email, password });
 
-    if (!currentUser) {
-      return res
-        .status(401)
-        .send({ message: "Incorrect username or password" });
+    const isMatch = await bcrypt.compare(password, currentUser.password);
+
+    if (!isMatch) {
+      return res.status(401).send({ message: "Incorrect password" });
     }
 
     const token = generateJwtToken({ userId: currentUser._id });
