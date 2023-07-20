@@ -157,7 +157,7 @@ async function handleComment(req, res) {
 
   await blog.save();
 
-  res.json({ message: "Comment added successfully", comment: newComment });
+  res.json({ message: "Comment added successfully", comment });
 }
 
 async function handleLike(req, res) {
@@ -181,7 +181,7 @@ async function handleLike(req, res) {
     like.user.equals(req.data.userId || req.data.adminId);
   });
 
-  if (userLikedIndex === -1) {
+  if (userLikedIndex !== -1) {
     blog.likes.splice(userLikedIndex, 1);
   } else {
     blog.likes.push({ user: req.data.userId || req.data.adminId });
