@@ -15,8 +15,8 @@
 - [x] User routes - signup/signin/logout(can be implemented in frontend)/
 - [x] Implement Authorization(bcrypt)
 - [x] Authentication(cookie/token - jwt)
-- [ ] Use Try/Catch
-- [ ] Blog Schema - title/coverimage/body/createdBy
-- [ ] Blog routes - postblog/showblogs/viewblog
-- [ ] Comments Schema - content/createdBy/blogid
-- [ ] Comments routes - postcomment(only loggedin users)
+- [x] Use Try/Catch
+- [ ] Blog Schema - title/coverimage/body/createdBy/comments
+- [x] Blog routes - postblog/showblogs/viewblog
+- [x] Comments Schema - content/createdBy/blogid
+- [x] Comments routes - postcomment(only loggedin users)

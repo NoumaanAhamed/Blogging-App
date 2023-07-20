@@ -13,13 +13,13 @@ async function handleAdminRegistration(req, res) {
       return res.status(409).send({ message: "missing details" });
     }
 
-    const isExist = await User.find({ email });
+    const isExist = await User.findOne({ email }); //!Don't use find()
 
     if (isExist) {
       return res.status(409).send({ message: "admin already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password.toString(), 10);
 
     const newAdmin = await User.create({
       ...req.body,
@@ -56,7 +56,10 @@ async function handleAdminLogin(req, res) {
       return res.status(404).send({ message: "admin not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, currentAdmin.password);
+    const isMatch = await bcrypt.compare(
+      password.toString(),
+      currentAdmin.password
+    );
 
     if (!isMatch) {
       return res.status(401).send({ message: "Incorrect password" });
@@ -88,13 +91,18 @@ async function handleUserRegistration(req, res) {
       return res.status(409).send({ message: "missing details" });
     }
 
-    const isExist = await User.find({ email });
+    const isExist = await User.findOne({ email });
 
     if (isExist) {
       return res.status(409).send({ message: "user already exists" });
     }
 
-    const newUser = await User.create(req.body);
+    const hashedPassword = await bcrypt.hash(password.toString(), 10);
+
+    const newUser = await User.create({
+      ...req.body,
+      password: hashedPassword,
+    });
 
     const token = generateJwtToken({ userId: newUser._id });
 
@@ -112,36 +120,45 @@ async function handleUserRegistration(req, res) {
 }
 
 async function handleUserLogin(req, res) {
-  try {
-    const { email, password } = req.body;
+  // try {
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(409).send({ message: "missing details" });
-    }
-    const currentUser = await User.findOne({ email, password });
-
-    if (!currentUser) {
-      return res
-        .status(401)
-        .send({ message: "Incorrect username or password" });
-    }
-
-    const token = generateJwtToken({ userId: currentUser._id });
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60,
-    });
-
-    res.send({
-      message: "User LoggedIn Successfully",
-      token,
-    });
-  } catch (err) {
-    res
-      .status(500)
-      .send({ message: "An error occurred while logging in user" });
+  if (!email || !password) {
+    return res.status(409).send({ message: "missing details" });
   }
+  const currentUser = await User.findOne({
+    email,
+  });
+
+  if (!currentUser) {
+    return res.status(404).send({ message: "user not found" });
+  }
+
+  const isMatch = await bcrypt.compare(
+    password.toString(),
+    currentUser.password
+  );
+
+  if (!isMatch) {
+    return res.status(401).send({ message: "Incorrect password" });
+  }
+
+  const token = generateJwtToken({ userId: currentUser._id });
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60,
+  });
+
+  res.send({
+    message: "User LoggedIn Successfully",
+    token,
+  });
+  // } catch (err) {
+  //   res
+  //     .status(500)
+  //     .send({ message: "An error occurred while logging in user" });
+  // }
 }
 
 async function handleLogout(req, res) {
