@@ -26,10 +26,10 @@ connectMongoDb(process.env.MongoURI);
 
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = ['http://localhost:5174'];
+const allowedOrigins = ['http://localhost:5173'];
 
 const corsOptions = {
-  origin: 'http://localhost:5174', // Replace this with your frontend domain
+  origin: 'http://localhost:5173', // Replace this with your frontend domain
   credentials: true, // Allow cookies to be included in requests
 };
 

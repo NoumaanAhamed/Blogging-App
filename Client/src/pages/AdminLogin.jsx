@@ -1,16 +1,18 @@
 import {
-    Alert,
-    AlertIcon,
-    Box,
-    Button,
-    FormControl,
-    FormLabel,
-    Heading,
-    Input,
+  Alert,
+  AlertIcon,
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
 } from '@chakra-ui/react';
+import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 
-const AdminLogin = () => {
+
+const AdminLogin = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -43,9 +45,7 @@ const AdminLogin = () => {
         
             const data = await response.json();
             console.log(data);
-        
-            // If login is successful, you can redirect the user to the dashboard or some other page
-            // For example: history.push('/dashboard');
+            Cookies.set('accessToken', data.token, { expires: 7 });
           } catch (error) {
             console.log('Error:', error.message);
           }
