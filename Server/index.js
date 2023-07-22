@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 
 const path = require("path");
 
+const cors = require("cors");
 //*refers to connection.js
 const connectMongoDb = require("./database/connection");
 
@@ -19,9 +20,18 @@ const blogRoute = require("./routes/blogRoutes.js");
 const app = express();
 
 //*middlewares
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
+
 app.use("/", userRoute);
 app.use("/blog", blogRoute);
 

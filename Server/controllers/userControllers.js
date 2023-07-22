@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const { sendCookie } = require("../utils/cookies");
 const { generateJwtToken } = require("../utils/jwt");
 const bcrypt = require("bcrypt");
 
@@ -29,12 +30,7 @@ async function handleAdminRegistration(req, res) {
 
     const token = generateJwtToken({ adminId: newAdmin._id });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60,
-    });
-
-    res.send({ message: "Admin Created Successfully", token });
+    sendCookie(token, res, "Admin Created Successfully", 201);
   } catch (err) {
     res
       .status(500)
@@ -67,15 +63,7 @@ async function handleAdminLogin(req, res) {
 
     const token = generateJwtToken({ adminId: currentAdmin._id });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60,
-    });
-
-    res.send({
-      message: "Admin LoggedIn Successfully",
-      token,
-    });
+    sendCookie(token, res, "Admin LoggedIn Successfully", 200);
   } catch (err) {
     res
       .status(500)
@@ -106,12 +94,7 @@ async function handleUserRegistration(req, res) {
 
     const token = generateJwtToken({ userId: newUser._id });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60,
-    });
-
-    res.send({ message: "User Created Successfully", token });
+    sendCookie(token, res, "User registered Successfully", 201);
   } catch (err) {
     res
       .status(500)
@@ -145,15 +128,8 @@ async function handleUserLogin(req, res) {
 
   const token = generateJwtToken({ userId: currentUser._id });
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60,
-  });
+  sendCookie(token, res, "User LoggedIn Successfully", 200);
 
-  res.send({
-    message: "User LoggedIn Successfully",
-    token,
-  });
   // } catch (err) {
   //   res
   //     .status(500)
@@ -164,11 +140,29 @@ async function handleUserLogin(req, res) {
 async function handleLogout(req, res) {
   try {
     // Clear the token cookie to log the user/admin out
-    res.clearCookie("token");
-    res.send({ message: "logout successful" });
+
+    res
+      .status(200)
+      .cookie("token", "", {
+        expires: new Date(Date.now()),
+        sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
+        secure: process.env.NODE_ENV === "Development" ? false : true,
+      })
+      .json({
+        message: "logged out",
+        userId: req.data.userId || req.data.userId,
+      });
   } catch (err) {
     res.status(500).send({ message: "An error occurred during logout" });
   }
+}
+
+async function handleUserInfo(req, res) {
+  const id = req.data.userId || req.data.adminId;
+
+  const userDetails = await User.findById(id);
+
+  res.send({ message: "User Verified", userDetails });
 }
 
 module.exports = {
@@ -177,4 +171,5 @@ module.exports = {
   handleUserRegistration,
   handleUserLogin,
   handleLogout,
+  handleUserInfo,
 };

@@ -217,7 +217,7 @@ async function handleViewMyBlogs(req, res) {
     // Fetch blogs created by the authenticated user (blog creator)
     const myBlogs = await Blog.find({
       createdBy: req.data.userId || req.data.adminId,
-    });
+    }).populate("createdBy", "email profilePic");
 
     res.json(myBlogs);
   } catch (error) {

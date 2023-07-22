@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: "/images/defaultProfile.avif",
+      default: "./defaultProfile.avif",
     },
   },
   {

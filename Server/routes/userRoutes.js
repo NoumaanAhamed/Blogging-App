@@ -8,16 +8,15 @@ const {
   handleUserRegistration,
   handleUserLogin,
   handleLogout,
+  handleUserInfo,
 } = require("../controllers/userControllers");
 const { isAuthenticated, isAdmin } = require("../middlewares/auth");
 
-router.get("/admin/test", isAuthenticated, isAdmin, (req, res) => {
-  return res.send("Admin Inside");
+router.get("/test", isAuthenticated, (req, res) => {
+  return res.sendStatus(200);
 });
 
-router.get("/user/test", isAuthenticated, (req, res) => {
-  return res.send("User Inside");
-});
+router.get("/user/me", isAuthenticated, handleUserInfo);
 
 router.post("/admin/register", handleAdminRegistration);
 
@@ -27,6 +26,6 @@ router.post("/user/register", handleUserRegistration);
 
 router.post("/user/login", handleUserLogin);
 
-router.post("/user/logout", isAuthenticated, handleLogout);
+router.get("/user/logout", isAuthenticated, handleLogout);
 
 module.exports = router;

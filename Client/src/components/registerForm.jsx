@@ -13,15 +13,18 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
+import { Toast } from "@chakra-ui/react";
+
+import { Link as RouterLink } from "react-router-dom";
+
 import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { CloseIcon } from "@chakra-ui/icons";
 
-import { Link as RouterLink } from "react-router-dom";
-
-export default function SimpleCard({ setIsLoggedIn }) {
+export default function SimpleCardRegister({ setIsLoggedIn }) {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,8 +33,9 @@ export default function SimpleCard({ setIsLoggedIn }) {
   const handleUserLogin = () => {
     axios
       .post(
-        "http://localhost:3000/user/login",
+        "http://localhost:3000/user/register",
         {
+          username,
           email,
           password,
         },
@@ -63,7 +67,7 @@ export default function SimpleCard({ setIsLoggedIn }) {
       >
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>
-            <Heading fontSize={"4xl"}>Sign in to your account</Heading>
+            <Heading fontSize={"4xl"}>Create a new account</Heading>
             <Text fontSize={"lg"} color={"gray.600"}>
               to enjoy all of our cool <Link color={"blue.400"}>features</Link>{" "}
               ✌️
@@ -76,6 +80,17 @@ export default function SimpleCard({ setIsLoggedIn }) {
             p={8}
           >
             <Stack spacing={4}>
+              <FormControl id="username">
+                <FormLabel>Username</FormLabel>
+                <Input
+                  name="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                  }}
+                />
+              </FormControl>
               <FormControl id="email">
                 <FormLabel>Email address</FormLabel>
                 <Input
@@ -104,8 +119,9 @@ export default function SimpleCard({ setIsLoggedIn }) {
                   align={"start"}
                   justify={"space-between"}
                 >
-                  <Checkbox>Remember me</Checkbox>
-                  <Link color={"blue.400"}>Forgot password?</Link>
+                  <Link as={RouterLink} to={"/login"} color={"blue.400"}>
+                    Already Registered? Sign In
+                  </Link>
                 </Stack>
                 <Button
                   bg={"blue.400"}
@@ -116,7 +132,7 @@ export default function SimpleCard({ setIsLoggedIn }) {
                   type="submit"
                   onClick={handleUserLogin}
                 >
-                  Sign in
+                  Register
                 </Button>
               </Stack>
             </Stack>
