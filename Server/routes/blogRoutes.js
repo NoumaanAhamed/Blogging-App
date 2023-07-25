@@ -37,7 +37,7 @@ router
   .delete(isAuthenticated, checkBlogOwnership, handleDeleteBlog);
 
 router.put(
-  "/:id/publish",
+  "/publish/:id",
   isAuthenticated,
   checkBlogOwnership,
   handlePublishBlog

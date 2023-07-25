@@ -1,3 +1,4 @@
+import { DeleteIcon, DownloadIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Image,
   Box,
@@ -10,6 +11,9 @@ import {
   Button,
   ButtonGroup,
 } from "@chakra-ui/react";
+import axios from "axios";
+import Blog from "./ActualBlog";
+import { useState } from "react";
 
 export default function MyBlogPostWithImage({
   title,
@@ -17,7 +21,47 @@ export default function MyBlogPostWithImage({
   createdAt,
   createdBy,
   coverImageURL,
+  id,
 }) {
+  const [showBlog, setShowBlog] = useState(false);
+
+  function handleView(id) {
+    setShowBlog(true);
+    // console.log(id);
+  }
+
+  function handleUpdate() {}
+
+  function handleDelete(id) {
+    axios
+      .delete(`http://localhost:3000/blog/${id}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log(res.data.message);
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+      });
+  }
+
+  function handlePublish(id) {
+    axios
+      .put(
+        `http://localhost:3000/blog/publish/${id}`,
+        { sample: "Hello" },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        console.log(res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return (
     <Center py={6}>
       <Box
@@ -70,19 +114,42 @@ export default function MyBlogPostWithImage({
           </Stack>
         </Stack>
         <ButtonGroup gap={1} mt={2}>
-          <Button variant={"outline"} colorScheme="pibk">
-            View
+          <Button
+            variant={"ghost"}
+            colorScheme="pink"
+            onClick={() => {
+              handleView(id);
+            }}
+          >
+            <ViewIcon />
           </Button>
-          <Button variant={"outline"} colorScheme="purple">
-            Publish
+          <Button
+            variant={"ghost"}
+            colorScheme="purple"
+            onClick={() => {
+              handlePublish(id);
+            }}
+          >
+            <DownloadIcon />
           </Button>
-        </ButtonGroup>
-        <ButtonGroup gap={1} mt={2}>
-          <Button variant={"outline"} colorScheme="cyan" pl={5} pr={5}>
-            Edit
+
+          <Button
+            variant={"ghost"}
+            colorScheme="cyan"
+            onClick={() => {
+              handleUpdate();
+            }}
+          >
+            <EditIcon />
           </Button>
-          <Button variant={"outline"} colorScheme="red" pl={5} pr={6}>
-            Delete
+          <Button
+            variant={"ghost"}
+            colorScheme="red"
+            onClick={() => {
+              handleDelete(id);
+            }}
+          >
+            <DeleteIcon />
           </Button>
         </ButtonGroup>
       </Box>

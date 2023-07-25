@@ -24,7 +24,7 @@ import BlogPostWithImage from "./components/Blog";
 import MyBlogPostWithImage from "./components/myBlog";
 import { AddIcon } from "@chakra-ui/icons";
 
-const Dashboard = ({ isLoggedIn, setIsLoggedIn }) => {
+const Dashboard = ({ email, setEmail }) => {
   const [blogs, setBlogs] = useState([]);
   const [myBlogs, setMyBlogs] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -65,7 +65,7 @@ const Dashboard = ({ isLoggedIn, setIsLoggedIn }) => {
       });
   }, []);
 
-  useEffect(() => {
+  function fetchMyBlogs() {
     axios
       .get("http://localhost:3000/blog/me", {
         withCredentials: true,
@@ -76,13 +76,23 @@ const Dashboard = ({ isLoggedIn, setIsLoggedIn }) => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }
+
+  useEffect(() => {
+    if (email) {
+      fetchMyBlogs();
+
+      setInterval(() => {
+        fetchMyBlogs();
+      }, 3000);
+    }
+  }, [email]);
 
   // line,enclosed, enclosed-colored, soft-rounded, solid-rounded, and unstyled
   return (
     // <Container>
     <>
-      {isLoggedIn ? (
+      {email ? (
         <Tabs size="lg" align="center" variant="enclosed" colorScheme="pink">
           <TabList mb="1em">
             <Tab>

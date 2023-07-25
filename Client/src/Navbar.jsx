@@ -52,7 +52,7 @@ const NavLink = ({ children }) => (
   </Link>
 );
 
-export default function Navbar({ isLoggedIn, setIsLoggedIn, email, setEmail }) {
+export default function Navbar({ email, setEmail }) {
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -73,7 +73,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, email, setEmail }) {
           status: "success",
           duration: 1500,
         });
-        setIsLoggedIn(false);
+        setEmail(null);
         navigate("/login");
       })
       .catch((err) => {
@@ -87,14 +87,16 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, email, setEmail }) {
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <Box>
             <Heading>
-              <Text
-                bgGradient="linear(to-l, #7928CA, #FF0080)"
-                bgClip="text"
-                _hover={{ bgGradient: "linear(to-r, red.500, yellow.500)" }}
-                cursor={"pointer"}
-              >
-                DevDairies.
-              </Text>
+              <Link to={"/"}>
+                <Text
+                  bgGradient="linear(to-l, #7928CA, #FF0080)"
+                  bgClip="text"
+                  _hover={{ bgGradient: "linear(to-r, red.500, yellow.500)" }}
+                  cursor={"pointer"}
+                >
+                  DevDairies.
+                </Text>
+              </Link>
             </Heading>
           </Box>
           <Flex display={{ base: "block", md: "none" }}>
@@ -114,7 +116,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, email, setEmail }) {
               <Button onClick={toggleColorMode}>
                 {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               </Button>
-              {isLoggedIn ? (
+              {email ? (
                 <Menu>
                   <MenuButton
                     as={Button}
@@ -148,16 +150,21 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, email, setEmail }) {
                 </Menu>
               ) : (
                 <Flex gap={3}>
-                  <Button colorScheme="pink">
-                    <Link to={"/register"}>Register </Link>
-                  </Button>
-                  <Button
-                    rightIcon={<ArrowForwardIcon />}
-                    colorScheme="teal"
-                    variant="outline"
-                  >
-                    <Link to={"/login"}>Sign In </Link>
-                  </Button>
+                  <Link to={"/register"}>
+                    <Button colorScheme="pink">Register </Button>{" "}
+                  </Link>
+
+                  <Link to={"/login"}>
+                    {" "}
+                    <Button
+                      rightIcon={<ArrowForwardIcon />}
+                      colorScheme="teal"
+                      variant="outline"
+                    >
+                      {" "}
+                      Sign In{" "}
+                    </Button>
+                  </Link>
                 </Flex>
               )}
             </Stack>
@@ -175,7 +182,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, email, setEmail }) {
               <DrawerBody>
                 <Stack spacing={4}>
                   {/* Add more menu items as needed */}
-                  {isLoggedIn ? (
+                  {email ? (
                     <>
                       <Button>Home</Button>
                       <Button colorScheme="red" onClick={handleLogOut}>

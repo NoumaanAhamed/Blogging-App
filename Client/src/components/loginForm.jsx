@@ -21,8 +21,8 @@ import { CloseIcon } from "@chakra-ui/icons";
 
 import { Link as RouterLink } from "react-router-dom";
 
-export default function SimpleCard({ setIsLoggedIn }) {
-  const [email, setEmail] = useState("");
+export default function SimpleCard({ setEmail }) {
+  const [email, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
@@ -40,8 +40,8 @@ export default function SimpleCard({ setIsLoggedIn }) {
       .then((res) => {
         console.log(res.data.message);
         // Cookies.set("token", res.data.token);
-        setIsLoggedIn(true);
-        navigate("/dashboard");
+        setEmail(email);
+        navigate("/");
       })
       .catch((err) => {
         console.log(err.response.data.message);
@@ -51,7 +51,7 @@ export default function SimpleCard({ setIsLoggedIn }) {
   return (
     <>
       <Box ml="auto" position="absolute" top="20" right="10">
-        <Link as={RouterLink} to={"/dashboard"}>
+        <Link as={RouterLink} to={"/"}>
           <CloseIcon cursor="pointer" />
         </Link>
       </Box>
@@ -83,7 +83,7 @@ export default function SimpleCard({ setIsLoggedIn }) {
                   type="text"
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setUserEmail(e.target.value);
                   }}
                 />
               </FormControl>

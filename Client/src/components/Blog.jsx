@@ -1,3 +1,4 @@
+import { ViewIcon } from "@chakra-ui/icons";
 import {
   Image,
   Box,
@@ -9,14 +10,22 @@ import {
   useColorModeValue,
   Button,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 export default function BlogPostWithImage({
+  id,
   title,
   body,
   createdAt,
   createdBy,
   coverImageURL,
 }) {
+  const navigate = useNavigate();
+
+  function handleView(id) {
+    navigate(`/${id}`);
+  }
+
   return (
     <Center py={6}>
       <Box
@@ -59,7 +68,9 @@ export default function BlogPostWithImage({
           >
             {title}
           </Heading>
-          <Text color={"gray.500"}>{body}</Text>
+          <Text color={"gray.500"}>
+            {body.length < 25 ? body : body.slice(0, 25) + "..."}
+          </Text>
         </Stack>
         <Stack mt={6} direction={"row"} spacing={4} align={"center"}>
           <Avatar src={createdBy.profilePic} alt={"Author"} />
@@ -73,7 +84,15 @@ export default function BlogPostWithImage({
           </Stack>
         </Stack>
         <Center mt={2}>
-          <Button variant={"outline"} colorScheme="pink">
+          <Button
+            onClick={() => {
+              handleView(id);
+            }}
+            // rightIcon={<ViewIcon />}
+            colorScheme="pink"
+            // bgGradient="linear(to-l, #7928CA, #FF0080)"
+            variant="solid"
+          >
             View
           </Button>
         </Center>

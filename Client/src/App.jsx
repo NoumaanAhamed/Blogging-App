@@ -8,10 +8,11 @@ import Dashboard from "./Dashboard";
 
 import axios from "axios";
 import Register from "./register";
+import BlogPage from "./BlogPage";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState("");
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState(null);
 
   useEffect(() => {
     function checkLoginStatus() {
@@ -23,48 +24,63 @@ function App() {
           console.log(res.data.message);
           // console.log(res.data.name.username);
           setEmail(res.data.userDetails.email);
-          setIsLoggedIn(true);
+          // setIsLoggedIn(true);
         })
         .catch((err) => {
           console.log(err.response.data.message);
           // console.log(err);
-          setIsLoggedIn(false);
+          // setIsLoggedIn(false);
         });
     }
 
     checkLoginStatus();
-  }, [isLoggedIn]);
+  }, []);
 
   return (
     <>
       <Router>
         {/* logout */}
         <Navbar
-          isLoggedIn={isLoggedIn}
-          setIsLoggedIn={setIsLoggedIn}
+          // isLoggedIn={isLoggedIn}
+          // setIsLoggedIn={setIsLoggedIn}
           email={email}
           setEmail={setEmail}
         />
         <Routes>
           <Route
-            path="/dashboard"
+            path="/"
             element={
               <Dashboard
-                setIsLoggedIn={setIsLoggedIn}
-                isLoggedIn={isLoggedIn}
+                // setIsLoggedIn={setIsLoggedIn}
+                // isLoggedIn={isLoggedIn}
+                email={email}
+                setEmail={setEmail}
               />
             }
           />
           {/* <Route path="/:id" element={<Blog />} /> */}
           <Route
             path="/login"
-            element={<Login setIsLoggedIn={setIsLoggedIn} />}
+            element={
+              <Login
+                // setIsLoggedIn={setIsLoggedIn}
+                email={email}
+                setEmail={setEmail}
+              />
+            }
           />
           {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
           <Route
             path="/register"
-            element={<Register setIsLoggedIn={setIsLoggedIn} />}
+            element={
+              <Register
+                // setIsLoggedIn={setIsLoggedIn}
+                email={email}
+                setEmail={setEmail}
+              />
+            }
           />
+          <Route path="/:id" element={<BlogPage />} />
         </Routes>
       </Router>
     </>

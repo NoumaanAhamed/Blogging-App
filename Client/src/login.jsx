@@ -12,10 +12,10 @@ import {
 import { Form } from "react-router-dom";
 import SimpleCard from "./components/loginForm";
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ setEmail }) => {
   return (
     <Container maxW="lg" centerContent>
-      <SimpleCard setIsLoggedIn={setIsLoggedIn} />
+      <SimpleCard setEmail={setEmail} />
     </Container>
   );
 };

@@ -3,10 +3,10 @@ import { Container } from "@chakra-ui/react";
 
 import SimpleCardRegister from "./components/registerForm";
 
-const Register = ({ setIsLoggedIn }) => {
+const Register = ({ setEmail }) => {
   return (
     <Container maxW="lg" centerContent>
-      <SimpleCardRegister setIsLoggedIn={setIsLoggedIn} />
+      <SimpleCardRegister setEmail={setEmail} />
     </Container>
   );
 };
